@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>农产品智慧供应链 · 五大智能场景</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', Arial, sans-serif;
+            background: #ecf5ec;
+            color: #1a2e1a;
+        }
+
+        /* ══ PAGE: 2-column grid ══ */
+        .page {
+            max-width: 1360px;
+            margin: 0 auto;
+            background: white;
+            display: grid;
+            grid-template-columns: 1fr 520px;
+        }
+
+        /* ══ 系统入口导航栏（全宽顶部） ══ */
+        .portal-bar {
+            grid-column: 1 / -1;
+            background: #14532d;
+            padding: 0 64px;
+            display: flex;
+            align-items: center;
+            gap: 0;
+            border-bottom: 2px solid #15803d;
+        }
+
+        .portal-bar-label {
+            font-size: 10px;
+            font-weight: 700;
+            color: rgba(255,255,255,0.45);
+            letter-spacing: 2.5px;
+            padding: 14px 20px 14px 0;
+            border-right: 1px solid rgba(255,255,255,0.12);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .portal-links {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding-left: 16px;
+            flex: 1;
+        }
+
+        .portal-link {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 11.5px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            color: rgba(255,255,255,0.75);
+            transition: background 0.15s, color 0.15s;
+            white-space: nowrap;
+        }
+
+        .portal-link:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+
+        .portal-link .pl-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .portal-link .pl-arr {
+            font-size: 9px;
+            opacity: 0.5;
+            margin-left: 2px;
+        }
+
+        .portal-link-divider {
+            width: 1px;
+            height: 16px;
+            background: rgba(255,255,255,0.1);
+            flex-shrink: 0;
+        }
+
+        /* ══ HEADER ══ */
+        .page-header {
+            grid-column: 1 / -1;
+            padding: 48px 64px 40px;
+            border-bottom: 1.5px solid #bbf7d0;
+            display: flex;
+            align-items: flex-end;
+            gap: 0;
+            background: linear-gradient(135deg, #f0fdf4 0%, #fefce8 100%);
+        }
+
+        .header-left { flex: 1; padding-right: 56px; }
+
+        .badge {
+            display: inline-block;
+            background: #f0fdf4;
+            border: 1px solid #86efac;
+            border-radius: 20px;
+            padding: 5px 16px;
+            font-size: 11px;
+            color: #15803d;
+            letter-spacing: 2px;
+            margin-bottom: 18px;
+        }
+
+        .page-header h1 {
+            font-size: 26px;
+            font-weight: 700;
+            color: #14532d;
+            letter-spacing: 2px;
+            line-height: 1.4;
+            margin-bottom: 12px;
+        }
+
+        .page-header .lead {
+            font-size: 13px;
+            color: #6b7280;
+            letter-spacing: 1px;
+            border-left: 2px solid #86efac;
+            padding-left: 12px;
+        }
+
+        .header-right {
+            width: 520px;
+            flex-shrink: 0;
+            padding: 0 24px;
+            border-left: 1px solid #bbf7d0;
+        }
+
+        .diag-badge {
+            display: inline-block;
+            background: #f0fdf4;
+            border: 1px solid #86efac;
+            border-radius: 20px;
+            padding: 4px 14px;
+            font-size: 10px;
+            color: #15803d;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+        }
+
+        .header-right h2 {
+            font-size: 14px;
+            font-weight: 700;
+            color: #14532d;
+            letter-spacing: 2px;
+            margin-bottom: 14px;
+        }
+
+        /* 链路横向图 */
+        .chain-row {
+            display: flex;
+            align-items: center;
+            gap: 0;
+        }
+
+        .chain-node {
+            flex: 1;
+            text-align: center;
+            padding: 10px 6px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: white;
+            cursor: pointer;
+            text-decoration: none;
+            display: block;
+            transition: opacity 0.15s, transform 0.1s;
+        }
+
+        .chain-node:hover { opacity: 0.85; transform: translateY(-1px); }
+
+        .cn-green  { background: linear-gradient(135deg, #15803d, #16a34a); }
+        .cn-lime   { background: linear-gradient(135deg, #4d7c0f, #65a30d); }
+        .cn-teal   { background: linear-gradient(135deg, #0f766e, #0d9488); }
+        .cn-amber  { background: linear-gradient(135deg, #92400e, #b45309); }
+        .cn-orange { background: linear-gradient(135deg, #9a3412, #c2410c); }
+
+        .chain-arr {
+            color: #86efac;
+            font-size: 14px;
+            padding: 0 3px;
+            flex-shrink: 0;
+        }
+
+        .chain-sub {
+            font-size: 9px;
+            opacity: 0.75;
+            font-weight: 400;
+            letter-spacing: 0;
+            margin-top: 3px;
+        }
+
+        /* ══ TEXT SECTIONS (left column) ══ */
+        .text-sec {
+            padding: 40px 56px 40px 64px;
+            border-right: 1px solid #bbf7d0;
+        }
+
+        .sec-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .sec-num {
+            font-size: 11px;
+            font-weight: 700;
+            color: #86efac;
+            letter-spacing: 1px;
+        }
+
+        .sec-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #15803d;
+            letter-spacing: 1px;
+        }
+
+        .sec-tag {
+            display: inline-block;
+            font-size: 10px;
+            background: #f0fdf4;
+            border: 1px solid #86efac;
+            border-radius: 10px;
+            padding: 2px 10px;
+            color: #16a34a;
+            letter-spacing: 1px;
+            margin-left: 4px;
+        }
+
+        .text-sec p {
+            font-size: 13.5px;
+            line-height: 1.9;
+            color: #374151;
+            margin-bottom: 12px;
+        }
+
+        .text-sec p:last-child { margin-bottom: 0; }
+
+        .text-sec strong { color: #15803d; font-weight: 600; }
+
+        .tool-pill {
+            display: inline-block;
+            background: #f0fdf4;
+            border: 1px solid #86efac;
+            border-radius: 4px;
+            padding: 1px 7px;
+            font-size: 12.5px;
+            color: #15803d;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .sub-group {
+            margin: 10px 0;
+            padding: 12px 16px;
+            background: #f9fafb;
+            border-left: 3px solid #86efac;
+            border-radius: 0 6px 6px 0;
+        }
+
+        .sub-group .sub-head {
+            font-size: 11px;
+            font-weight: 700;
+            color: #64748b;
+            letter-spacing: 2px;
+            margin-bottom: 6px;
+        }
+
+        .sub-group p { font-size: 13px; margin-bottom: 4px; }
+
+        .closing-box {
+            margin-top: 16px;
+            padding: 20px 22px;
+            background: linear-gradient(135deg, #f0fdf4, #fefce8);
+            border: 1px solid #86efac;
+            border-radius: 10px;
+            font-size: 13.5px;
+            line-height: 1.85;
+            color: #374151;
+        }
+
+        /* ══ DIAGRAM SECTIONS (right column) ══ */
+        .diag-sec {
+            background-color: #f6fbf6;
+            background-image: linear-gradient(#bbf7d0, #bbf7d0);
+            background-size: 1.5px 100%;
+            background-position: 50% 0;
+            background-repeat: no-repeat;
+            padding: 28px 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .svg-conn {
+            display: block;
+            width: 100%;
+            overflow: visible;
+            flex-shrink: 0;
+        }
+
+        /* ── Goal node ── */
+        .goal-wrap { display: flex; justify-content: center; }
+
+        .goal-box {
+            background: linear-gradient(135deg, #14532d, #15803d);
+            color: white;
+            border-radius: 12px;
+            padding: 14px 40px;
+            text-align: center;
+            box-shadow: 0 4px 16px rgba(21,128,61,0.25);
+            width: 280px;
+        }
+
+        .goal-eyebrow { font-size: 9px; letter-spacing: 3px; opacity: 0.6; margin-bottom: 5px; }
+        .goal-title   { font-size: 15px; font-weight: 700; letter-spacing: 2px; }
+        .goal-desc    { font-size: 10px; opacity: 0.55; margin-top: 5px; letter-spacing: 0.5px; }
+
+        /* ── Five scenario streams ══ */
+        .streams-5 {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 6px;
+        }
+
+        .stream5 { border-radius: 8px; overflow: hidden; border: 1.5px solid; }
+        .s5-green  { background: #f0fdf4; border-color: #86efac; }
+        .s5-lime   { background: #f7fee7; border-color: #bef264; }
+        .s5-teal   { background: #f0fdfa; border-color: #99f6e4; }
+        .s5-amber  { background: #fffbeb; border-color: #fde68a; }
+        .s5-orange { background: #fff7ed; border-color: #fed7aa; }
+
+        .stream5-head {
+            padding: 8px 6px;
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-align: center;
+            color: white;
+        }
+
+        .s5-green  .stream5-head { background: linear-gradient(135deg, #14532d, #15803d); }
+        .s5-lime   .stream5-head { background: linear-gradient(135deg, #4d7c0f, #65a30d); }
+        .s5-teal   .stream5-head { background: linear-gradient(135deg, #0f766e, #0d9488); }
+        .s5-amber  .stream5-head { background: linear-gradient(135deg, #92400e, #b45309); }
+        .s5-orange .stream5-head { background: linear-gradient(135deg, #9a3412, #c2410c); }
+
+        .stream5-body { padding: 8px 6px 10px; display: flex; flex-direction: column; gap: 5px; }
+
+        .tool-card5 {
+            background: white;
+            border-radius: 5px;
+            padding: 5px 6px;
+            font-size: 9.5px;
+            color: #334155;
+            display: flex;
+            align-items: flex-start;
+            gap: 5px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+            border: 1px solid rgba(0,0,0,0.04);
+            line-height: 1.4;
+        }
+
+        .tdot5 { width: 4px; height: 4px; border-radius: 50%; flex-shrink: 0; margin-top: 3px; }
+        .s5-green  .tdot5 { background: #15803d; }
+        .s5-lime   .tdot5 { background: #65a30d; }
+        .s5-teal   .tdot5 { background: #0d9488; }
+        .s5-amber  .tdot5 { background: #b45309; }
+        .s5-orange .tdot5 { background: #c2410c; }
+
+        /* ── Product cards (enhanced with links) ── */
+        .product-list { display: flex; flex-direction: column; gap: 8px; }
+
+        .product-card {
+            background: white;
+            border-radius: 10px;
+            padding: 11px 14px;
+            border: 1.5px solid #e2e8f0;
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            transition: border-color 0.15s, box-shadow 0.15s;
+        }
+
+        .product-card:hover {
+            border-color: #86efac;
+            box-shadow: 0 2px 10px rgba(21,128,61,0.08);
+        }
+
+        .prod-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .prod-content { flex: 1; min-width: 0; }
+
+        .prod-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 4px;
+        }
+
+        .prod-name {
+            font-size: 11.5px;
+            font-weight: 700;
+            color: #1a2e1a;
+            letter-spacing: 0.5px;
+        }
+
+        .prod-link-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 9.5px;
+            font-weight: 600;
+            text-decoration: none;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            transition: opacity 0.15s;
+            flex-shrink: 0;
+        }
+
+        .prod-link-btn:hover { opacity: 0.8; }
+
+        .prod-desc {
+            font-size: 10px;
+            color: #6b7280;
+            line-height: 1.5;
+        }
+
+        .prod-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 5px; }
+
+        .prod-tag {
+            font-size: 9px;
+            padding: 1px 7px;
+            border-radius: 10px;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .prod-url {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 6px;
+            padding-top: 6px;
+            border-top: 1px dashed #e2e8f0;
+            font-size: 9.5px;
+            color: #9ca3af;
+        }
+
+        .prod-url a {
+            color: #15803d;
+            text-decoration: none;
+            font-weight: 500;
+            word-break: break-all;
+        }
+
+        .prod-url a:hover { text-decoration: underline; }
+
+        /* ── Metrics band ── */
+        .metrics-band {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .metric-card {
+            background: white;
+            border-radius: 10px;
+            padding: 14px 16px;
+            border: 1.5px solid #bbf7d0;
+            box-shadow: 0 2px 8px rgba(21,128,61,0.06);
+        }
+
+        .metric-num {
+            font-size: 28px;
+            font-weight: 700;
+            color: #15803d;
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+
+        .metric-num span { font-size: 16px; }
+
+        .metric-lbl {
+            font-size: 10px;
+            color: #6b7280;
+            letter-spacing: 0.5px;
+            line-height: 1.4;
+        }
+
+        .metric-sub {
+            font-size: 9px;
+            color: #9ca3af;
+            margin-top: 5px;
+            padding-top: 5px;
+            border-top: 1px solid #f1f5f9;
+        }
+
+        /* ── Support band ── */
+        .support-band {
+            background: #f9fafb;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .support-label {
+            font-size: 9px;
+            font-weight: 700;
+            color: #9ca3af;
+            letter-spacing: 1.5px;
+            white-space: nowrap;
+            padding-right: 10px;
+            border-right: 1px solid #e2e8f0;
+        }
+
+        .support-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+
+        .support-chip {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 4px 10px;
+            font-size: 10.5px;
+            color: #475569;
+        }
+
+        .cdot { width: 4px; height: 4px; border-radius: 50%; flex-shrink: 0; }
+
+        /* ── Foundation ── */
+        .foundation {
+            background: linear-gradient(135deg, #14532d, #15803d, #16a34a);
+            border-radius: 10px;
+            padding: 18px 22px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 16px rgba(21,128,61,0.25);
+        }
+
+        .found-left { display: flex; flex-direction: column; gap: 4px; }
+        .found-eyebrow { font-size: 9px; letter-spacing: 2px; opacity: 0.5; }
+        .found-title { font-size: 14px; font-weight: 700; letter-spacing: 1px; }
+        .found-desc { font-size: 9.5px; opacity: 0.5; margin-top: 2px; }
+
+        .found-stats { display: flex; gap: 20px; }
+        .found-stat { text-align: center; }
+        .found-num { font-size: 22px; font-weight: 700; line-height: 1; }
+        .found-lbl { font-size: 9px; opacity: 0.5; letter-spacing: 1px; margin-top: 3px; }
+
+        /* ── Legend ── */
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding: 12px 14px;
+            border-radius: 8px;
+            border: 1px solid #f1f5f9;
+            background: white;
+        }
+
+        .lg { display: flex; align-items: center; gap: 5px; font-size: 10px; color: #64748b; }
+        .lg-d { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+
+        /* ── 系统入口卡片（单独section全宽） ── */
+        .portal-section {
+            grid-column: 1 / -1;
+            padding: 32px 64px;
+            background: linear-gradient(135deg, #f0fdf4 0%, #fefce8 100%);
+            border-top: 1.5px solid #bbf7d0;
+            border-bottom: 1.5px solid #bbf7d0;
+        }
+
+        .portal-section-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: #14532d;
+            letter-spacing: 2px;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .portal-section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #bbf7d0;
+        }
+
+        .portal-cards {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+        }
+
+        .portal-entry {
+            background: white;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 18px 16px 14px;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            transition: border-color 0.15s, box-shadow 0.15s, transform 0.1s;
+        }
+
+        .portal-entry:hover {
+            border-color: var(--accent);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            transform: translateY(-2px);
+        }
+
+        .pe-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin-bottom: 2px;
+        }
+
+        .pe-name {
+            font-size: 13px;
+            font-weight: 700;
+            color: #1a2e1a;
+            letter-spacing: 0.5px;
+        }
+
+        .pe-desc {
+            font-size: 10.5px;
+            color: #6b7280;
+            line-height: 1.5;
+        }
+
+        .pe-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 5px 12px;
+            border-radius: 14px;
+            font-size: 10px;
+            font-weight: 600;
+            margin-top: 4px;
+            align-self: flex-start;
+            letter-spacing: 0.5px;
+        }
+
+        /* ══ 联系我们按钮 ══ */
+        .contact-btn {
+            margin-left: auto;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 16px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.25);
+            border-radius: 14px;
+            color: rgba(255,255,255,0.85);
+            font-size: 11.5px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: background 0.15s, border-color 0.15s;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .contact-btn:hover {
+            background: rgba(255,255,255,0.18);
+            border-color: rgba(255,255,255,0.4);
+            color: white;
+        }
+
+        /* ══ 弹窗遮罩 ══ */
+        .modal-mask {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.35);
+            z-index: 999;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-mask.active { display: flex; }
+
+        .modal-card {
+            background: white;
+            border-radius: 16px;
+            padding: 32px 40px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.18);
+            text-align: center;
+            min-width: 280px;
+            position: relative;
+        }
+        .modal-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: #9ca3af;
+            letter-spacing: 2px;
+            margin-bottom: 16px;
+        }
+        .modal-name {
+            font-size: 22px;
+            font-weight: 700;
+            color: #14532d;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+        }
+        .modal-phone {
+            font-size: 20px;
+            font-weight: 600;
+            color: #15803d;
+            letter-spacing: 2px;
+        }
+        .modal-close {
+            position: absolute;
+            top: 12px; right: 16px;
+            background: none;
+            border: none;
+            font-size: 18px;
+            color: #9ca3af;
+            cursor: pointer;
+            line-height: 1;
+            font-family: inherit;
+        }
+        .modal-close:hover { color: #374151; }
+
+        @media print {
+            @page { margin: 12mm 14mm; size: A4 landscape; }
+            body { background: white; }
+            .page { max-width: 100%; box-shadow: none; }
+            .diag-sec { break-inside: avoid; }
+            .portal-bar .portal-link .pl-arr { display: none; }
+        }
+    </style>
+</head>
+<body>
+<div class="page">
+
+    <!-- ════ 系统入口导航栏 ════ -->
+    <div class="portal-bar">
+        <div class="portal-bar-label">系统入口</div>
+        <div class="portal-links">
+            <a class="portal-link" href="https://clyc.app.xmschain.com" target="_blank">
+                <div class="pl-dot" style="background:#4ade80"></div>数链智产<span class="pl-arr">↗</span>
+            </a>
+            <div class="portal-link-divider"></div>
+            <a class="portal-link" href="https://jgyc.app.xmschain.com/login" target="_blank">
+                <div class="pl-dot" style="background:#bef264"></div>数链智价<span class="pl-arr">↗</span>
+            </a>
+            <div class="portal-link-divider"></div>
+            <a class="portal-link" href="https://jgyc.app.xmschain.com/inference" target="_blank">
+                <div class="pl-dot" style="background:#6ee7b7"></div>数链智控<span class="pl-arr">↗</span>
+            </a>
+            <div class="portal-link-divider"></div>
+            <a class="portal-link" href="https://wrjxk.test.xmschain.com" target="_blank">
+                <div class="pl-dot" style="background:#fde68a"></div>数链智巡<span class="pl-arr">↗</span>
+            </a>
+            <div class="portal-link-divider"></div>
+            <a class="portal-link" href="https://cyyb.app.xmschain.com/intel/report/#/create" target="_blank">
+                <div class="pl-dot" style="background:#fed7aa"></div>数链智研<span class="pl-arr">↗</span>
+            </a>
+        </div>
+        <button class="contact-btn" onclick="document.getElementById('contact-modal').classList.add('active')">📞 联系我们</button>
+    </div>
+
+    <!-- ════ HEADER ════ -->
+    <div class="page-header">
+        <div class="header-left">
+            <div class="badge">农产品智慧供应链 · AI 赋能全链路</div>
+            <h1>五大智能场景 · 全链路数字赋能</h1>
+            <p class="lead">运用人工智能技术，构建覆盖农产品全链条的数字化管理体系，实现供应链全程可视、可测、可控</p>
+        </div>
+        <div class="header-right">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+                <div class="diag-badge" style="margin-bottom:0;">全链路架构</div>
+                <div class="diag-badge" style="margin-bottom:0;background:#ecfdf5;border-color:#6ee7b7;color:#065f46;">🤖 智能体对话</div>
+            </div>
+            <h2>生产 → 采购 → 运输 → 仓储 → 交易</h2>
+            <div class="chain-row">
+                <a class="chain-node cn-green" href="https://hiagent.xmschain.com/product/llm/chat/d6gm8rcl59d9ouc7earg" target="_blank">生产端<div class="chain-sub">数链智产</div></a>
+                <div class="chain-arr">→</div>
+                <a class="chain-node cn-lime" href="https://hiagent.xmschain.com/product/llm/chat/d63i0bsl59d9ouc74jv0" target="_blank">采购端<div class="chain-sub">数链智价</div></a>
+                <div class="chain-arr">→</div>
+                <a class="chain-node cn-teal" href="https://hiagent.xmschain.com/product/llm/chat/d6shjbsl59d9ouc9afe0" target="_blank">运输端<div class="chain-sub">物流预警</div></a>
+                <div class="chain-arr">→</div>
+                <a class="chain-node cn-amber" href="https://hiagent.xmschain.com/product/llm/chat/d66im48svobk8pp4irng" target="_blank">仓储端<div class="chain-sub">无人机巡库</div></a>
+                <div class="chain-arr">→</div>
+                <a class="chain-node cn-orange" href="https://hiagent.xmschain.com/product/llm/chat/d70vsckl59d9ouca4j1g" target="_blank">交易端<div class="chain-sub">数链智研</div></a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ════ 系统快速入口卡片区 ════ -->
+    <div class="portal-section">
+        <div class="portal-section-title">五大系统 · 一键直达</div>
+        <div class="portal-cards">
+            <!-- 产量预测 -->
+            <a class="portal-entry" href="https://clyc.app.xmschain.com" target="_blank" style="--accent:#86efac;">
+                <div class="pe-icon" style="background:#f0fdf4;">🌿</div>
+                <div class="pe-name">数链智产平台</div>
+                <div class="pe-desc">美巴大豆主产区动态监测，多源数据融合，前置2个月产量预测</div>
+                <div class="pe-cta" style="background:#f0fdf4;color:#15803d;border:1px solid #86efac;">进入系统 →</div>
+            </a>
+            <!-- 价格预测 -->
+            <a class="portal-entry" href="https://jgyc.app.xmschain.com/login" target="_blank" style="--accent:#bef264;">
+                <div class="pe-icon" style="background:#f7fee7;">📈</div>
+                <div class="pe-name">数链智价平台</div>
+                <div class="pe-desc">CBOT大豆期货价格预测，LGB模型，MAPE&lt;5%，45天决策周期</div>
+                <div class="pe-cta" style="background:#f7fee7;color:#4d7c0f;border:1px solid #bef264;">进入系统 →</div>
+            </a>
+            <!-- 物流预警 -->
+            <a class="portal-entry" href="https://jgyc.app.xmschain.com/inference" target="_blank" style="--accent:#99f6e4;">
+                <div class="pe-icon" style="background:#f0fdfa;">🚢</div>
+                <div class="pe-name">数链智控平台</div>
+                <div class="pe-desc">提前7-20天识别港口拥堵、航道滞期，前置10天预警准确率70%+</div>
+                <div class="pe-cta" style="background:#f0fdfa;color:#0f766e;border:1px solid #99f6e4;">进入系统 →</div>
+            </a>
+            <!-- 无人机巡库 -->
+            <a class="portal-entry" href="https://wrjxk.test.xmschain.com" target="_blank" style="--accent:#fde68a;">
+                <div class="pe-icon" style="background:#fffbeb;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" width="26" height="26"><g fill="none" stroke="#b45309" stroke-linecap="round" stroke-linejoin="round"><!-- rotor blades left --><line x1="1" y1="12" x2="13" y2="12" stroke-width="2"/><line x1="3" y1="10" x2="11" y2="14" stroke-width="1.2" stroke-opacity="0.5"/><!-- left motor mount --><circle cx="7" cy="12" r="2" fill="#fde68a" stroke-width="1.6"/><!-- left arm --><line x1="7" y1="14" x2="14" y2="20" stroke-width="2"/><!-- body --><rect x="14" y="18" width="12" height="8" rx="2.5" fill="#fde68a" stroke-width="1.8"/><!-- right arm --><line x1="26" y1="20" x2="33" y2="14" stroke-width="2"/><!-- right motor mount --><circle cx="33" cy="12" r="2" fill="#fde68a" stroke-width="1.6"/><!-- rotor blades right --><line x1="27" y1="12" x2="39" y2="12" stroke-width="2"/><line x1="29" y1="10" x2="37" y2="14" stroke-width="1.2" stroke-opacity="0.5"/><!-- camera --><circle cx="20" cy="27" r="2.2" fill="#92400e" stroke="#92400e" stroke-width="1"/><!-- landing gear left --><line x1="16" y1="26" x2="14" y2="33" stroke-width="1.6"/><line x1="11" y1="33" x2="18" y2="33" stroke-width="1.8"/><!-- landing gear right --><line x1="24" y1="26" x2="26" y2="33" stroke-width="1.6"/><line x1="22" y1="33" x2="29" y2="33" stroke-width="1.8"/></g></svg></div>
+                <div class="pe-name">数链智巡平台</div>
+                <div class="pe-desc">激光雷达+北斗GPS，全天候作业，库存识别准确率95%+，云端闭环</div>
+                <div class="pe-cta" style="background:#fffbeb;color:#92400e;border:1px solid #fde68a;">进入系统 →</div>
+            </a>
+            <!-- 产业研报 -->
+            <a class="portal-entry" href="https://cyyb.app.xmschain.com/intel/report/#/create" target="_blank" style="--accent:#fed7aa;">
+                <div class="pe-icon" style="background:#fff7ed;">📊</div>
+                <div class="pe-name">数链智研平台</div>
+                <div class="pe-desc">150+权威信源，知识图谱+大模型，四类农产品图谱，MCP工具对接</div>
+                <div class="pe-cta" style="background:#fff7ed;color:#9a3412;border:1px solid #fed7aa;">进入系统 →</div>
+            </a>
+        </div>
+    </div>
+
+    <!-- ════ 01 项目背景 ════ -->
+    <div class="text-sec">
+        <div class="sec-label">
+            <span class="sec-num">01</span>
+            <span class="sec-title">项目背景与核心目标</span>
+        </div>
+        <p>农产品供应链的核心挑战在于信息不对称与决策滞后：海外产量难以提前研判、价格走势预测精度不足、物流风险无法提前感知、库存盘点效率低下、市场情报转化困难。这些问题叠加在一起，导致企业在采购、贸易与风险管理上长期处于被动。</p>
+        <p>本项目通过人工智能技术，构建覆盖农产品全链条的数字化管理体系。从海外产量监测，到港口物流风险预警，再到仓储智能盘点，<strong>实现供应链全程可视、可测、可控</strong>，为企业打造高效可控的数字化供应链。</p>
+        <p>项目聚焦五大核心场景，覆盖<strong>生产—采购—运输—仓储—交易</strong>全链条，形成环环相扣的智能化供应链体系，破解"供需研判复杂，采销决策困难"的核心痛点。</p>
+    </div>
+
+    <div class="diag-sec">
+        <div class="goal-wrap">
+            <div class="goal-box">
+                <div class="goal-eyebrow">核心目标</div>
+                <div class="goal-title">农产品供应链智能化</div>
+                <div class="goal-desc">可视 · 可测 · 可控 · 全链路覆盖</div>
+            </div>
+        </div>
+        <svg class="svg-conn" height="28" viewBox="0 0 472 28" preserveAspectRatio="none">
+            <line x1="236" y1="0" x2="236" y2="12" stroke="#86efac" stroke-width="1.5" vector-effect="non-scaling-stroke"/>
+            <line x1="60"  y1="12" x2="412" y2="12" stroke="#86efac" stroke-width="1.5" vector-effect="non-scaling-stroke"/>
+            <line x1="60"  y1="12" x2="60"  y2="28" stroke="#86efac" stroke-width="1.5" vector-effect="non-scaling-stroke"/>
+            <line x1="157" y1="12" x2="157" y2="28" stroke="#bef264" stroke-width="1.5" vector-effect="non-scaling-stroke"/>
+            <line x1="236" y1="12" x2="236" y2="28" stroke="#6ee7b7" stroke-width="1.5" vector-effect="non-scaling-stroke"/>
+            <line x1="315" y1="12" x2="315" y2="28" stroke="#fde68a" stroke-width="1.5" vector-effect="non-scaling-stroke"/>
+            <line x1="412" y1="12" x2="412" y2="28" stroke="#fed7aa" stroke-width="1.5" vector-effect="non-scaling-stroke"/>
+            <circle cx="60"  cy="12" r="2.5" fill="#86efac" vector-effect="non-scaling-stroke"/>
+            <circle cx="157" cy="12" r="2.5" fill="#bef264" vector-effect="non-scaling-stroke"/>
+            <circle cx="236" cy="12" r="2.5" fill="#6ee7b7" vector-effect="non-scaling-stroke"/>
+            <circle cx="315" cy="12" r="2.5" fill="#fde68a" vector-effect="non-scaling-stroke"/>
+            <circle cx="412" cy="12" r="2.5" fill="#fed7aa" vector-effect="non-scaling-stroke"/>
+        </svg>
+        <div class="streams-5">
+            <div class="stream5 s5-green">
+                <div class="stream5-head">生产端</div>
+                <div class="stream5-body">
+                    <div class="tool-card5"><div class="tdot5"></div>美国大豆产量预测</div>
+                    <div class="tool-card5"><div class="tdot5"></div>巴西大豆产量预测</div>
+                    <div class="tool-card5"><div class="tdot5"></div>动态监测与趋势分析</div>
+                </div>
+            </div>
+            <div class="stream5 s5-lime">
+                <div class="stream5-head">采购端</div>
+                <div class="stream5-body">
+                    <div class="tool-card5"><div class="tdot5"></div>CBOT期货价格预测</div>
+                    <div class="tool-card5"><div class="tdot5"></div>价格区间判断</div>
+                    <div class="tool-card5"><div class="tdot5"></div>采购决策支撑</div>
+                </div>
+            </div>
+            <div class="stream5 s5-teal">
+                <div class="stream5-head">运输端</div>
+                <div class="stream5-body">
+                    <div class="tool-card5"><div class="tdot5"></div>港口拥堵预警</div>
+                    <div class="tool-card5"><div class="tdot5"></div>航道滞期预警</div>
+                    <div class="tool-card5"><div class="tdot5"></div>7-20天前置预测</div>
+                </div>
+            </div>
+            <div class="stream5 s5-amber">
+                <div class="stream5-head">仓储端</div>
+                <div class="stream5-body">
+                    <div class="tool-card5"><div class="tdot5"></div>无人机自主巡库</div>
+                    <div class="tool-card5"><div class="tdot5"></div>激光雷达测量</div>
+                    <div class="tool-card5"><div class="tdot5"></div>自动盘库报告</div>
+                </div>
+            </div>
+            <div class="stream5 s5-orange">
+                <div class="stream5-head">交易端</div>
+                <div class="stream5-body">
+                    <div class="tool-card5"><div class="tdot5"></div>产业智能研报</div>
+                    <div class="tool-card5"><div class="tdot5"></div>产业链图谱</div>
+                    <div class="tool-card5"><div class="tdot5"></div>行业智答平台</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ════ 02 五大场景 ════ -->
+    <div class="text-sec">
+        <div class="sec-label">
+            <span class="sec-num">02</span>
+            <span class="sec-title">五大场景建设成效</span>
+            <span class="sec-tag">全链路覆盖</span>
+        </div>
+        <div class="sub-group">
+            <div class="sub-head">生产端 · 产量预测</div>
+            <p>建立覆盖<strong>美国、巴西</strong>主产区的大豆数链智产平台，开展产量动态监测与趋势分析，为市场研判、供需调节、贸易布局提供重要支撑。针对传统模型在数据融合、极端天气应对方面的痛点，创新构建从宏观气候背景、微观生长环境到地表作物实况的<span class="tool-pill">全链条多维数据闭环</span>。</p>
+        </div>
+        <div class="sub-group">
+            <div class="sub-head">采购端 · 价格预测</div>
+            <p>融合历史价格、市场供需与宏观因子，基于<span class="tool-pill">LGB模型</span>与<span class="tool-pill">分位数回归模型</span>，构建大豆期货价格预测模型。将"方向判断"升级为可量化的<strong>自然月区间预测</strong>，支撑未来45天决策周期，帮助企业把握价格规律，掌握采购主动权。</p>
+        </div>
+        <div class="sub-group">
+            <div class="sub-head">运输端 · 物流风险预警</div>
+            <p>搭建智能数链智控平台，基于<span class="tool-pill">LightGBM</span>与<span class="tool-pill">MLE-DOJO策略优化框架</span>，融合AIS、气象及港口运行等多源数据。提前<strong>7-20天</strong>识别港口拥堵、航道滞期等风险，从被动应对转向主动管控。</p>
+        </div>
+        <div class="sub-group">
+            <div class="sub-head">仓储端 · 无人机巡库</div>
+            <p>打造<span class="tool-pill">硬件+算法+云端一体化</span>智能巡库体系，依托AI激光雷达点云算法，融合北斗+GPS厘米级定位，千万级数据瞬时捕获，毫米级还原料堆形态，精准计算体积与重量，实现全流程自动化。</p>
+        </div>
+        <div class="sub-group">
+            <div class="sub-head">交易端 · 产业研报</div>
+            <p>以<span class="tool-pill">大模型</span>、<span class="tool-pill">知识图谱</span>、<span class="tool-pill">智能体</span>技术为核心，累计整合150+高质量权威信源，完成行业资讯数据采集，上线豆二、豆油、豆粕、玉米四类农产品产业图谱，实现深度研究智能体对接MCP工具。</p>
+        </div>
+    </div>
+
+    <div class="diag-sec">
+        <div class="product-list">
+            <!-- 产量预测 -->
+            <div class="product-card">
+                <div class="prod-icon" style="background:#f0fdf4;">🌿</div>
+                <div class="prod-content">
+                    <div class="prod-header">
+                        <div class="prod-name">数链智产平台</div>
+                        <a class="prod-link-btn" href="https://clyc.app.xmschain.com" target="_blank"
+                           style="background:#f0fdf4;color:#15803d;border:1px solid #86efac;">进入 ↗</a>
+                    </div>
+                    <div class="prod-desc">多源权威数据自动采集，气象+遥感+产量多源融合，Web服务精准输出，可视化交互系统</div>
+                    <div class="prod-tags">
+                        <span class="prod-tag" style="background:#f0fdf4;border:1px solid #86efac;color:#15803d;">美国主产区</span>
+                        <span class="prod-tag" style="background:#f0fdf4;border:1px solid #86efac;color:#15803d;">巴西主产区</span>
+                        <span class="prod-tag" style="background:#f0fdf4;border:1px solid #86efac;color:#15803d;">精准率94%+</span>
+                    </div>
+                    <div class="prod-url">🔗 <a href="https://clyc.app.xmschain.com" target="_blank">clyc.app.xmschain.com</a></div>
+                </div>
+            </div>
+            <!-- 价格预测 -->
+            <div class="product-card">
+                <div class="prod-icon" style="background:#f7fee7;">📈</div>
+                <div class="prod-content">
+                    <div class="prod-header">
+                        <div class="prod-name">数链智价平台</div>
+                        <a class="prod-link-btn" href="https://jgyc.app.xmschain.com/login" target="_blank"
+                           style="background:#f7fee7;color:#4d7c0f;border:1px solid #bef264;">进入 ↗</a>
+                    </div>
+                    <div class="prod-desc">LGB+分位数回归模型，MAPE&lt;5%，自然月区间预测，覆盖数据集管理、模型训练、推理全流程</div>
+                    <div class="prod-tags">
+                        <span class="prod-tag" style="background:#f7fee7;border:1px solid #bef264;color:#4d7c0f;">CBOT大豆</span>
+                        <span class="prod-tag" style="background:#f7fee7;border:1px solid #bef264;color:#4d7c0f;">误差&lt;5%</span>
+                        <span class="prod-tag" style="background:#f7fee7;border:1px solid #bef264;color:#4d7c0f;">45天周期</span>
+                    </div>
+                    <div class="prod-url">🔗 <a href="https://jgyc.app.xmschain.com/login" target="_blank">jgyc.app.xmschain.com/login</a></div>
+                </div>
+            </div>
+            <!-- 物流预警 -->
+            <div class="product-card">
+                <div class="prod-icon" style="background:#f0fdfa;">🚢</div>
+                <div class="prod-content">
+                    <div class="prod-header">
+                        <div class="prod-name">数链智控平台</div>
+                        <a class="prod-link-btn" href="https://jgyc.app.xmschain.com/inference" target="_blank"
+                           style="background:#f0fdfa;color:#0f766e;border:1px solid #99f6e4;">进入 ↗</a>
+                    </div>
+                    <div class="prod-desc">AIS+气象+港口运行多源融合，多层集成学习，中长期预测，滚动更新与可解释性分析</div>
+                    <div class="prod-tags">
+                        <span class="prod-tag" style="background:#f0fdfa;border:1px solid #99f6e4;color:#0f766e;">10天前置</span>
+                        <span class="prod-tag" style="background:#f0fdfa;border:1px solid #99f6e4;color:#0f766e;">准确率70%+</span>
+                    </div>
+                    <div class="prod-url">🔗 <a href="https://jgyc.app.xmschain.com/inference" target="_blank">jgyc.app.xmschain.com/inference</a></div>
+                </div>
+            </div>
+            <!-- 无人机巡库 -->
+            <div class="product-card">
+                <div class="prod-icon" style="background:#fffbeb;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" width="22" height="22"><g fill="none" stroke="#b45309" stroke-linecap="round" stroke-linejoin="round"><!-- rotor blades left --><line x1="1" y1="12" x2="13" y2="12" stroke-width="2"/><line x1="3" y1="10" x2="11" y2="14" stroke-width="1.2" stroke-opacity="0.5"/><!-- left motor mount --><circle cx="7" cy="12" r="2" fill="#fde68a" stroke-width="1.6"/><!-- left arm --><line x1="7" y1="14" x2="14" y2="20" stroke-width="2"/><!-- body --><rect x="14" y="18" width="12" height="8" rx="2.5" fill="#fde68a" stroke-width="1.8"/><!-- right arm --><line x1="26" y1="20" x2="33" y2="14" stroke-width="2"/><!-- right motor mount --><circle cx="33" cy="12" r="2" fill="#fde68a" stroke-width="1.6"/><!-- rotor blades right --><line x1="27" y1="12" x2="39" y2="12" stroke-width="2"/><line x1="29" y1="10" x2="37" y2="14" stroke-width="1.2" stroke-opacity="0.5"/><!-- camera --><circle cx="20" cy="27" r="2.2" fill="#92400e" stroke="#92400e" stroke-width="1"/><!-- landing gear left --><line x1="16" y1="26" x2="14" y2="33" stroke-width="1.6"/><line x1="11" y1="33" x2="18" y2="33" stroke-width="1.8"/><!-- landing gear right --><line x1="24" y1="26" x2="26" y2="33" stroke-width="1.6"/><line x1="22" y1="33" x2="29" y2="33" stroke-width="1.8"/></g></svg></div>
+                <div class="prod-content">
+                    <div class="prod-header">
+                        <div class="prod-name">数链智巡平台</div>
+                        <a class="prod-link-btn" href="https://wrjxk.test.xmschain.com" target="_blank"
+                           style="background:#fffbeb;color:#92400e;border:1px solid #fde68a;">进入 ↗</a>
+                    </div>
+                    <div class="prod-desc">激光雷达+北斗/GPS定位，-20℃~55℃宽温适配，云端协同管控，实时回传，自动生成盘库报告</div>
+                    <div class="prod-tags">
+                        <span class="prod-tag" style="background:#fffbeb;border:1px solid #fde68a;color:#92400e;">识别率95%+</span>
+                        <span class="prod-tag" style="background:#fffbeb;border:1px solid #fde68a;color:#92400e;">全天候作业</span>
+                    </div>
+                    <div class="prod-url">🔗 <a href="https://wrjxk.test.xmschain.com" target="_blank">wrjxk.test.xmschain.com</a></div>
+                </div>
+            </div>
+            <!-- 产业研报 -->
+            <div class="product-card">
+                <div class="prod-icon" style="background:#fff7ed;">📊</div>
+                <div class="prod-content">
+                    <div class="prod-header">
+                        <div class="prod-name">数链智研平台</div>
+                        <a class="prod-link-btn" href="https://cyyb.app.xmschain.com/intel/report/#/create" target="_blank"
+                           style="background:#fff7ed;color:#9a3412;border:1px solid #fed7aa;">进入 ↗</a>
+                    </div>
+                    <div class="prod-desc">150+权威信源，知识图谱+大模型+智能体，豆二/豆油/豆粕/玉米四类图谱，MCP工具深度对接</div>
+                    <div class="prod-tags">
+                        <span class="prod-tag" style="background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;">150+信源</span>
+                        <span class="prod-tag" style="background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;">四类图谱</span>
+                    </div>
+                    <div class="prod-url">🔗 <a href="https://cyyb.app.xmschain.com/intel/report/#/create" target="_blank">cyyb.app.xmschain.com</a></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ════ 03 建设目标 ════ -->
+    <div class="text-sec">
+        <div class="sec-label">
+            <span class="sec-num">03</span>
+            <span class="sec-title">量化建设目标</span>
+            <span class="sec-tag">三大核心指标</span>
+        </div>
+        <p>项目以可量化的精度指标为衡量标准，确保每个场景的成果能够真正支撑业务决策，而不仅仅停留在技术验证层面。</p>
+        <div class="sub-group">
+            <div class="sub-head">预测精度目标</div>
+            <p>实现巴西、美国大豆主产区<strong>前置2个月</strong>的产量预测准确率<strong>94%以上</strong>；CBOT大豆连续合约前置<strong>30天</strong>的价格波动范围预测准确率<strong>95%以上</strong>，打造数链智研平台，实现智能产研分析报告快速生成。</p>
+        </div>
+        <div class="sub-group">
+            <div class="sub-head">风险预警目标</div>
+            <p>开发滞期预警模型，实现国内主要粮食装卸港<strong>前置10天</strong>滞期预警的准确率<strong>70%以上</strong>，从根本上改变依赖人工经验的被动应对方式。</p>
+        </div>
+        <div class="sub-group">
+            <div class="sub-head">巡库准确率目标</div>
+            <p>实现无人机搭载激光雷达AI巡库，识别库存与账面库存准确率达到<strong>95%以上</strong>，盘点效率提升数倍，人工成本大幅降低，告别高危作业风险。</p>
+        </div>
+    </div>
+
+    <div class="diag-sec">
+        <div class="metrics-band">
+            <div class="metric-card">
+                <div class="metric-num">94<span>%+</span></div>
+                <div class="metric-lbl">大豆产量预测准确率</div>
+                <div class="metric-sub">前置2个月 · 美国&巴西主产区</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-num">95<span>%+</span></div>
+                <div class="metric-lbl">价格波动范围预测准确率</div>
+                <div class="metric-sub">CBOT大豆 · 前置30天</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-num" style="color:#0f766e;">70<span>%+</span></div>
+                <div class="metric-lbl">滞期预警准确率</div>
+                <div class="metric-sub">国内主要粮食港口 · 前置10天</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-num" style="color:#b45309;">95<span>%+</span></div>
+                <div class="metric-lbl">巡库识别准确率</div>
+                <div class="metric-sub">识别库存与账面库存 · 全自动</div>
+            </div>
+        </div>
+        <div class="support-band" style="margin-top:4px;">
+            <div class="support-label">技术底座</div>
+            <div class="support-chips">
+                <div class="support-chip"><div class="cdot" style="background:#15803d"></div>LGB模型</div>
+                <div class="support-chip"><div class="cdot" style="background:#65a30d"></div>分位数回归</div>
+                <div class="support-chip"><div class="cdot" style="background:#0d9488"></div>LightGBM</div>
+                <div class="support-chip"><div class="cdot" style="background:#b45309"></div>激光雷达点云</div>
+                <div class="support-chip"><div class="cdot" style="background:#c2410c"></div>知识图谱</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ════ 04 技术研发成效 ════ -->
+    <div class="text-sec">
+        <div class="sec-label">
+            <span class="sec-num">04</span>
+            <span class="sec-title">技术研发成效</span>
+            <span class="sec-tag">五个产品 · 核心突破</span>
+        </div>
+        <p>五个产品均已完成核心研发工作，在各自赛道实现关键技术突破，并沉淀为可持续演进的平台化能力，实现从"一次性交付"到"长效可用"的升级。</p>
+        <div class="sub-group">
+            <div class="sub-head">价格预测 · 数链智价平台</div>
+            <p>模型连续三个月MAPE（平均绝对百分比误差）小于5%，稳定支撑大豆采购点价等重要业务决策。进一步利用<strong>多智能体协同技术</strong>，综合舆情、天气与产量等多源数据，结合业务专家知识和大模型推理能力，为业务端提供价格上下限参考区间及决策依据。平台覆盖数据集管理、模型训练、推理及验证的全流程闭环。</p>
+        </div>
+        <div class="sub-group">
+            <div class="sub-head">产量预测 · 全链条数据闭环</div>
+            <p>创新性构建从宏观气候背景、微观生长环境到地表作物实况的全链条、多维互补数据闭环。以Web服务形式精准输出大豆产量预测、历史趋势等核心数据，开发多模块可视化交互系统，大幅简化数据解读流程，有效应对极端天气对预测的影响。</p>
+        </div>
+        <div class="sub-group">
+            <div class="sub-head">物流预警 · 可解释风险分析</div>
+            <p>已能够对进口大豆装港拥堵、内贸玉米满期及三峡航道通航等<strong>典型场景</strong>进行风险预警，中长期预测准确率已基本达到预期目标，并实现了风险结果的滚动更新与可解释性分析。</p>
+        </div>
+        <div class="sub-group">
+            <div class="sub-head">无人机巡库 · 全天候智能作业</div>
+            <p>自主起降、路径规划、自动返航，-20℃~55℃宽温适配，雪天亦可作业。云端协同管控，数据实时回传、异常智能告警，形成管理闭环。盘点效率提升数倍，人工成本大幅降低，仓储管理实现<strong>自动化、精准化、智能化</strong>。</p>
+        </div>
+        <div class="sub-group">
+            <div class="sub-head">产业研报 · 深度智能研究</div>
+            <p>行业智答板块实现深度研究智能体对接MCP工具，检索与问答能力进一步升级；产业链图谱模块上线节点管理、全局拖拽功能，完成<strong>豆二、豆油、豆粕、玉米</strong>四类农产品产业图谱数据接入，配套专属行业分析师支撑。</p>
+        </div>
+    </div>
+
+    <div class="diag-sec">
+        <div style="background:#f0fdf4;border:1.5px solid #86efac;border-radius:10px;padding:14px 16px;">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+                <span style="display:inline-flex;align-items:center;padding:3px 10px;border-radius:14px;font-size:9.5px;font-weight:700;letter-spacing:1.5px;background:#f0fdf4;border:1px solid #86efac;color:#15803d;">技术研发成效</span>
+                <span style="font-size:9.5px;color:#9ca3af;">五大核心突破 · 平台化沉淀</span>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:7px;">
+                <div style="display:flex;align-items:center;gap:5px;background:white;border:1px solid rgba(0,0,0,0.06);border-radius:6px;padding:6px 10px;font-size:10.5px;color:#334155;box-shadow:0 1px 2px rgba(0,0,0,0.04);">
+                    <div class="cdot" style="background:#15803d"></div>产量预测MAPE持续达标
+                </div>
+                <div style="display:flex;align-items:center;gap:5px;background:white;border:1px solid rgba(0,0,0,0.06);border-radius:6px;padding:6px 10px;font-size:10.5px;color:#334155;box-shadow:0 1px 2px rgba(0,0,0,0.04);">
+                    <div class="cdot" style="background:#65a30d"></div>价格区间预测误差&lt;5%
+                </div>
+                <div style="display:flex;align-items:center;gap:5px;background:white;border:1px solid rgba(0,0,0,0.06);border-radius:6px;padding:6px 10px;font-size:10.5px;color:#334155;box-shadow:0 1px 2px rgba(0,0,0,0.04);">
+                    <div class="cdot" style="background:#0d9488"></div>三大典型场景预警落地
+                </div>
+                <div style="display:flex;align-items:center;gap:5px;background:white;border:1px solid rgba(0,0,0,0.06);border-radius:6px;padding:6px 10px;font-size:10.5px;color:#334155;box-shadow:0 1px 2px rgba(0,0,0,0.04);">
+                    <div class="cdot" style="background:#b45309"></div>巡库效率提升数倍
+                </div>
+                <div style="display:flex;align-items:center;gap:5px;background:white;border:1px solid rgba(0,0,0,0.06);border-radius:6px;padding:6px 10px;font-size:10.5px;color:#334155;box-shadow:0 1px 2px rgba(0,0,0,0.04);">
+                    <div class="cdot" style="background:#c2410c"></div>150+信源实时整合
+                </div>
+                <div style="display:flex;align-items:center;gap:5px;background:white;border:1px solid rgba(0,0,0,0.06);border-radius:6px;padding:6px 10px;font-size:10.5px;color:#334155;box-shadow:0 1px 2px rgba(0,0,0,0.04);">
+                    <div class="cdot" style="background:#7c3aed"></div>多智能体协同决策
+                </div>
+                <div style="display:flex;align-items:center;gap:5px;background:white;border:1px solid rgba(0,0,0,0.06);border-radius:6px;padding:6px 10px;font-size:10.5px;color:#334155;box-shadow:0 1px 2px rgba(0,0,0,0.04);">
+                    <div class="cdot" style="background:#0284c7"></div>全流程平台化闭环
+                </div>
+                <div style="display:flex;align-items:center;gap:5px;background:white;border:1px solid rgba(0,0,0,0.06);border-radius:6px;padding:6px 10px;font-size:10.5px;color:#334155;box-shadow:0 1px 2px rgba(0,0,0,0.04);">
+                    <div class="cdot" style="background:#0f766e"></div>可解释风险滚动更新
+                </div>
+            </div>
+        </div>
+        <div style="background:#fafbff;border:1.5px solid #ddd6fe;border-radius:10px;padding:14px 16px;margin-top:8px;">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+                <span style="display:inline-flex;align-items:center;padding:3px 10px;border-radius:14px;font-size:9.5px;font-weight:700;letter-spacing:1.5px;background:#f5f3ff;border:1px solid #ddd6fe;color:#7c3aed;">沉淀平台</span>
+                <span style="font-size:9.5px;color:#9ca3af;">从一次性交付 → 长效可用</span>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:4px;">
+                <div style="background:white;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden;">
+                    <div style="background:#f8fafc;border-bottom:1px solid #f1f5f9;padding:7px 10px;font-size:9px;font-weight:700;color:#64748b;letter-spacing:1.5px;text-align:center;">数链智价平台</div>
+                    <div style="padding:8px 10px;display:flex;flex-direction:column;gap:5px;">
+                        <div style="display:flex;align-items:center;gap:6px;font-size:10px;color:#334155;"><div class="cdot" style="background:#65a30d"></div>数据集管理</div>
+                        <div style="display:flex;align-items:center;gap:6px;font-size:10px;color:#334155;"><div class="cdot" style="background:#65a30d"></div>模型训练推理</div>
+                        <div style="display:flex;align-items:center;gap:6px;font-size:10px;color:#334155;"><div class="cdot" style="background:#65a30d"></div>全流程验证</div>
+                    </div>
+                </div>
+                <div style="background:white;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden;">
+                    <div style="background:#f8fafc;border-bottom:1px solid #f1f5f9;padding:7px 10px;font-size:9px;font-weight:700;color:#64748b;letter-spacing:1.5px;text-align:center;">产业研报平台</div>
+                    <div style="padding:8px 10px;display:flex;flex-direction:column;gap:5px;">
+                        <div style="display:flex;align-items:center;gap:6px;font-size:10px;color:#334155;"><div class="cdot" style="background:#c2410c"></div>深度研究智能体</div>
+                        <div style="display:flex;align-items:center;gap:6px;font-size:10px;color:#334155;"><div class="cdot" style="background:#c2410c"></div>产业链图谱</div>
+                        <div style="display:flex;align-items:center;gap:6px;font-size:10px;color:#334155;"><div class="cdot" style="background:#c2410c"></div>MCP工具对接</div>
+                    </div>
+                </div>
+                <div style="background:white;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden;">
+                    <div style="background:#f8fafc;border-bottom:1px solid #f1f5f9;padding:7px 10px;font-size:9px;font-weight:700;color:#64748b;letter-spacing:1.5px;text-align:center;">巡库云端平台</div>
+                    <div style="padding:8px 10px;display:flex;flex-direction:column;gap:5px;">
+                        <div style="display:flex;align-items:center;gap:6px;font-size:10px;color:#334155;"><div class="cdot" style="background:#b45309"></div>实时数据回传</div>
+                        <div style="display:flex;align-items:center;gap:6px;font-size:10px;color:#334155;"><div class="cdot" style="background:#b45309"></div>异常智能告警</div>
+                        <div style="display:flex;align-items:center;gap:6px;font-size:10px;color:#334155;"><div class="cdot" style="background:#b45309"></div>管理闭环形成</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ════ 05 战略价值 ════ -->
+    <div class="text-sec" style="border-bottom:none;">
+        <div class="sec-label">
+            <span class="sec-num">05</span>
+            <span class="sec-title">战略价值与意义</span>
+        </div>
+        <p>五大场景，不是五个孤立的AI应用，而是围绕农产品供应链这条主线，在不同链路环节上提供协同支撑的完整智能体系。生产端的产量预测为采购提供基础判断，采购端的价格预测指导点价决策，运输端的风险预警保障物流安全，仓储端的智能巡库确保库存精准，交易端的研报平台将信息优势转化为决策优势。</p>
+        <div class="closing-box">
+            推动人工智能技术与农产品产业研究深度融合，破解<strong>"供需研判复杂，采销决策困难"</strong>的核心痛点，赋能业务人员<strong>"看得更全，想得更远"</strong>，保障业务稳定与高效运转。<br><br>
+            助力企业实现高效协同运营与科学决策，强化农产品供应链韧性和自主可控能力。从单点的方向性判断，到全链路的量化决策支撑——这套体系正在让每一个农产品贸易决策都更有据可依、更有迹可循。
+        </div>
+    </div>
+
+    <div class="diag-sec" style="border-bottom:none;">
+        <div class="foundation">
+            <div class="found-left">
+                <div class="found-eyebrow">建设成果</div>
+                <div class="found-title">农产品供应链智能底座</div>
+                <div class="found-desc">可视 · 可测 · 可控 · 可持续演进</div>
+            </div>
+            <div class="found-stats">
+                <div class="found-stat">
+                    <div class="found-num">5</div>
+                    <div class="found-lbl">智能场景</div>
+                </div>
+                <div class="found-stat">
+                    <div class="found-num">150<span style="font-size:13px;">+</span></div>
+                    <div class="found-lbl">权威信源</div>
+                </div>
+                <div class="found-stat">
+                    <div class="found-num">95<span style="font-size:13px;">%</span></div>
+                    <div class="found-lbl">精准率目标</div>
+                </div>
+            </div>
+        </div>
+        <div class="legend">
+            <div class="lg"><div class="lg-d" style="background:#15803d"></div>生产端 · 产量预测</div>
+            <div class="lg"><div class="lg-d" style="background:#65a30d"></div>采购端 · 价格预测</div>
+            <div class="lg"><div class="lg-d" style="background:#0d9488"></div>运输端 · 物流预警</div>
+            <div class="lg"><div class="lg-d" style="background:#b45309"></div>仓储端 · 无人机巡库</div>
+            <div class="lg"><div class="lg-d" style="background:#c2410c"></div>交易端 · 产业研报</div>
+        </div>
+    </div>
+
+</div>
+
+<!-- 联系我们弹窗 -->
+<div id="contact-modal" class="modal-mask" onclick="if(event.target===this)this.classList.remove('active')">
+    <div class="modal-card">
+        <button class="modal-close" onclick="document.getElementById('contact-modal').classList.remove('active')">✕</button>
+        <div class="modal-title">联系我们</div>
+        <div class="modal-name">郑伟芳</div>
+        <div class="modal-phone">18250350158</div>
+    </div>
+</div>
+</body>
+</html>
